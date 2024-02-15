@@ -1,6 +1,6 @@
 ---
 title: "Contributor Code of Conduct"
-author: "marina"
+author: "Project Team"
 date: '2024-02-15'
 output: html_document
 ---
