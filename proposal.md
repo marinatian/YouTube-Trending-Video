@@ -1,8 +1,3 @@
----
-output:
-  pdf_document: default
-  html_document: default
----
 # Proposal
 #### Group 12
 members：Shiyi Chen, Ruomeng Tian,Zerui Zhang,Hanwen Zhang
@@ -40,4 +35,5 @@ Mia, a YouTube content creator focused on expanding her channel's reach across N
 She uses the YouTube Trending Video Analytics Dashboard to filter videos by country and category, observing which genres trend in the USA, Canada, and Mexico. She notes the popularity of gaming content in the USA, culinary videos in Mexico, and fitness tutorials in Canada.
 Armed with these insights, Mia plans her content calendar to include gaming walkthroughs tailored to her US audience, Mexican cuisine recipes for viewers in Mexico, and workout routines for her Canadian followers, optimizing her channel's appeal across regions.
 
-![sketch](552projectdashboard.jpg)
+#### Sketch of the application
+![sketch](551projectdashboard.jpg)

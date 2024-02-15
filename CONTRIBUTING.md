@@ -1,10 +1,3 @@
----
-title: "Contribution Guidelines"
-author: "Project Team"
-date: '2024-02-15'
-output: html_document
----
-
 # Contribution Guidelines
 
 Thank you for your interest in contributing to our project! We welcome contributions from everyone and are grateful for any help you can provide. Below are some guidelines that all contributors should follow to make the contribution process smooth and enjoyable for everyone.
