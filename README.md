@@ -30,8 +30,6 @@ The YouTube Trending Video Analytics Dashboard's main page visualizes the spread
 - Zerui Zhang
 - Hanwen Zhang
 
-## Acknowledgments
-[Optional section to acknowledge any assistance or resources that contributed to the project.]
 
 ## License
 This project is licensed under the MIT License - see the LICENSE.md file for details.
