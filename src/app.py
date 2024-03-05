@@ -16,11 +16,13 @@ server = app.server
 # the sidebar layout
 sidebar = dbc.Col(
     [
+        html.Div(style={'margin-top': '10px'}),
         html.Div([
             html.Img(src=app.get_asset_url('YTLogo_old_new_animation.gif'),id='image', style={'width': '100%'}),
             ], className='sidebar'),
-        html.H2("Trending Video"),
-        html.Hr(),
+        html.Div(style={'margin-top': '60px'}),
+        html.H3("Trending Video",style={"textAlign": "center"}),
+        html.Div(style={'margin-top': '10px'}),
         dbc.Nav(
             [
                 html.Div(
@@ -35,16 +37,27 @@ sidebar = dbc.Col(
                     ),
                     style={"background-color": "white", "padding": "10px", "margin-bottom": "10px"}
                 ),
+                html.Div(style={'margin-top': '60px'}),
                 html.Div([
                     html.Label('Country', className='mt-4'),
                     dcc.RadioItems(
                         id='country-radioitems',
                         options=[{'label': country, 'value': country} for country in df['country'].dropna().unique()],
                         value=df['country'].dropna().unique()[0],
-                        labelStyle={'display': 'block'}  # Ensures each radio item is on a new line
+                        labelStyle={
+                            'display': 'block',
+                            'font-size': '20px',
+                            'padding': '20px',
+                            'margin-left': '25px'}
                     )
                 ],
-                style={"background-color": "white", "padding": "10px", "margin-bottom": "10px"}
+                style={
+                    "background-color": "white", 
+                    "padding": "10px", 
+                    "margin-top": "50px",
+                    "margin-bottom": "10px",
+                    'border-top': '2px solid #d6d6d6'
+                    }
                 )
             ],
             vertical=True,
