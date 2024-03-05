@@ -16,10 +16,9 @@ server = app.server
 # the sidebar layout
 sidebar = dbc.Col(
     [
-        html.Div(
-            html.H2("YouTube", className="display-4"),
-            style={"background-color": "white", "padding": "10px", "margin-bottom": "10px"}
-        ),
+        html.Div([
+            html.Img(src=app.get_asset_url('YTLogo_old_new_animation.gif'),id='image', style={'width': '100%'}),
+            ], className='sidebar'),
         html.Hr(),
         dbc.Nav(
             [
@@ -50,7 +49,7 @@ sidebar = dbc.Col(
             pills=True,
         ),
     ],
-    style={"position": "fixed", "top": 0, "left": 0, "bottom": 0, "width": "16rem", "padding": "2rem 1rem","background-color": "grey"},
+    style={"position": "fixed", "top": 0, "left": 0, "bottom": 0, "width": "16rem", "padding": "2rem 1rem","background-color": "rgba(0, 123, 255, 0.6)"},
     md=3,
 )
 
