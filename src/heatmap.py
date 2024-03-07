@@ -1,7 +1,11 @@
 import plotly.express as px
 import pandas as pd
 
-def generate_heatmap(df, selected_metric ='view_count', metrics=['view_count', 'likes', 'comment_count']):
+def generate_heatmap(df,date_range, selected_metric ='view_count', metrics=['view_count', 'likes', 'comment_count']):
+
+    # filter the df use the date range
+    df = df.loc[lambda x : (x['trending_date_map'] >= date_range[0]) & (x['trending_date_map'] <= date_range[1])]
+
     df['publishedAt'] = pd.to_datetime(df['publishedAt'], errors='coerce')
     df['hour_of_day'] = df['publishedAt'].dt.hour
     df['day_of_week'] = df['publishedAt'].dt.dayofweek
@@ -12,16 +16,19 @@ def generate_heatmap(df, selected_metric ='view_count', metrics=['view_count', '
         threshold = df[metrics].quantile(0.95)
         filtered_df = df[df[metrics] > threshold]
         heatmap_df = filtered_df.groupby(['day_of_week', 'hour_of_day', 'day_name'])[metrics].mean().reset_index()
-        heatmap_df = heatmap_df.pivot('day_name', 'hour_of_day', metrics).fillna(0)
+        heatmap_df = heatmap_df.pivot(index='day_name', columns='hour_of_day', values=metrics).fillna(0)
         return heatmap_df
 
-    aggregated_data = aggregate_data(selected_metric)
-    print(aggregated_data.shape)
+    aggregated_data = (
+        aggregate_data(selected_metric)
+        .reindex(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'])
+        .reindex(columns=range(24))
+    )
     fig = px.imshow(
         aggregated_data,
         #labels=dict(x="Hour of Day", y="Day of Week", color=selected_metric.capitalize()),
-        x=[str(i) for i in range(24)],
-        y=['Mon.', 'Tues.', 'Wed.', 'Thurs.', 'Fri.', 'Sat.', 'Sun.'],
+        x=aggregated_data.columns,
+        y=aggregated_data.index,
         color_continuous_scale='PuRd',
         aspect='auto'
     )
