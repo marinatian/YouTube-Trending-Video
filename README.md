@@ -1,6 +1,6 @@
 # YouTube-Trending-Video
 
-App Link: https://ytbtrending-f06ec9a0362a.herokuapp.com
+App Link: [https://youtubetrending-632d250a4d89.herokuapp.com](https://youtubetrending-632d250a4d89.herokuapp.com)
 
 ## About the Project
 This project developed a dashboard for content creators, digital marketers and media strategy teams in North America. Focusing on the U.S., Canada, and Mexico, the tool provides an in-depth analysis of trending videos on YouTube to gain insight into viewer preferences and effective content strategies.
