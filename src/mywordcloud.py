@@ -20,15 +20,23 @@ def clean_tokenize(text, stop_words):
     words = [word for word in words if len(word) > 2 and not any(char.isdigit() for char in word)]
     return words
 
-def generate_wordcloud(df,date_range, selected_country ):
-
+def generate_wordcloud(df, date_range, selected_country=None, category=None, width=500, height=280):
+    
     # filter the df use the date range
     df = df.loc[lambda x : (x['trending_date_map'] >= date_range[0]) & (x['trending_date_map'] <= date_range[1])]
 
     additional_stopwords = set(['-', '|', 'official', 'trailer', '2023', '2024', 'video']) 
     stop_words = set(stopwords.words('english')) | additional_stopwords
 
-    df_filtered = df[df['country'] == selected_country]
+    # If 'All' is selected, use the full dataset; otherwise, filter by the selected country
+    if selected_country:
+        df_filtered = df[df['country'] == selected_country]
+    else:
+        df_filtered = df
+        
+    if category:
+        df_filtered = df_filtered[df_filtered['categoryName'] == category]
+        
     df_filtered = df_filtered[~df_filtered['title'].str.contains('video', case=False)]
     text = " ".join(title for title in df_filtered['title'].dropna())
     words = clean_tokenize(text, stop_words)
@@ -38,8 +46,8 @@ def generate_wordcloud(df,date_range, selected_country ):
     if len(word_counts) == 0:
         word_counts['no data'] = 1
     wordcloud = WordCloud(background_color='white',
-                            width=800,
-                            height=550,
+                            width=width,
+                            height=height,
                           ).generate_from_frequencies(word_counts)
     img = wordcloud.to_image()
     with BytesIO() as buffer:

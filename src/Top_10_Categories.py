@@ -12,13 +12,19 @@ def generate_top10_categories(df, date_range, selected_country='A11'):
 
     category_counts = df['categoryName'].value_counts().nlargest(10)
 
-    fig = px.bar(category_counts, orientation='h', color=category_counts.index,
+    fig = px.bar(category_counts, 
+                 orientation='h', 
+                 color=category_counts.values,
                  labels={'value': 'Number of Videos', 'index': 'Category'},
+                 color_continuous_scale=px.colors.sequential.Teal,
                  title=f'Top 10 Most Popular Categories in {selected_country}')
 
     # dont show the legend
     fig.update_layout(
         yaxis={'categoryorder': 'total ascending'},
-        showlegend=False
+        showlegend=False,
+        margin=dict(l=20, r=20, t=50, b=20),
+        
+        plot_bgcolor='rgba(0,0,0,0)',
     )
     return fig

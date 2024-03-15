@@ -6,10 +6,20 @@ def generate_heatmap(df,date_range, selected_metric ='view_count', metrics=['vie
     # filter the df use the date range
     df = df.loc[lambda x : (x['trending_date_map'] >= date_range[0]) & (x['trending_date_map'] <= date_range[1])]
 
-    df['publishedAt'] = pd.to_datetime(df['publishedAt'], errors='coerce')
-    df['hour_of_day'] = df['publishedAt'].dt.hour
-    df['day_of_week'] = df['publishedAt'].dt.dayofweek
-    df['day_name'] = df['publishedAt'].dt.day_name()
+    # df['publishedAt'] = pd.to_datetime(df['publishedAt'], errors='coerce')
+    # df['hour_of_day'] = df['publishedAt'].dt.hour
+    # df['day_of_week'] = df['publishedAt'].dt.dayofweek
+    # df['day_name'] = df['publishedAt'].dt.day_name()
+
+    df = (
+        df
+        .assign(publishedAt=lambda x: pd.to_datetime(x['publishedAt'], errors='coerce'))
+        .assign(hour_of_day=lambda x: x['publishedAt'].dt.hour)
+        .assign(day_of_week=lambda x: x['publishedAt'].dt.dayofweek)
+        .assign(day_name=lambda x: x['publishedAt'].dt.day_name())
+    )
+
+
 
     # Aggregate data for heatmap
     def aggregate_data(metrics):
@@ -29,17 +39,16 @@ def generate_heatmap(df,date_range, selected_metric ='view_count', metrics=['vie
         #labels=dict(x="Hour of Day", y="Day of Week", color=selected_metric.capitalize()),
         x=aggregated_data.columns,
         y=aggregated_data.index,
-        color_continuous_scale='PuRd',
-        aspect='auto'
+        aspect='auto',
     )
     
     fig.update_layout(
         xaxis_nticks=24,
         yaxis_nticks=7,
         margin=dict(t=20, l=20, b=20, r=20),
-        hovermode='closest'
+        hovermode='closest',
     )
     
-    fig.update_coloraxes(colorscale='PuRd', colorbar_title_side='right')
+    fig.update_coloraxes(colorscale='Teal', colorbar_title_side='right')
     
     return fig

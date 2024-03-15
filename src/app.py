@@ -1,6 +1,6 @@
 import dash
 from dash import dcc, html
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 import pandas as pd
 import dash_bootstrap_components as dbc
 from heatmap import generate_heatmap
@@ -16,12 +16,11 @@ df.dropna(inplace=True)
 df = (
     df
     .assign(trending_date=lambda x: pd.to_datetime(x['trending_date']))
-    .assign(trending_date=lambda x: x['trending_date'])
     # add a column to map the trending_date from min to max
     .assign(trending_date_map=lambda x: (x['trending_date'] - min(x['trending_date'])).dt.days)
 )
 
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP],suppress_callback_exceptions=True)
 server = app.server
 
 # the sidebar layout
@@ -33,22 +32,10 @@ sidebar = dbc.Col(
             ], className='sidebar'),
         html.Div(style={'margin-top': '60px'}),
         html.H3("Trending Video",style={"textAlign": "center"}),
+        html.H6("Helping North American video creators to visualize content trends and audience preferences.",style={"textAlign": "center"}),        
         html.Div(style={'margin-top': '10px'}),
         dbc.Nav(
             [
-                # create a datapickerRange
-                # html.Div(
-                #     dcc.DatePickerRange(
-                #         id='date-picker-range',
-                #         start_date=df['trending_date'].min(),
-                #         end_date=df['trending_date'].max(),
-                #         display_format='YYYY-MM-DD',
-                #         with_portal=True,
-                #         clearable=True
-                #     ),
-                #     style={"background-color": "white", "padding": "10px", "margin-bottom": "10px"}
-                # ),
-
                 # create a slider to select the date range to map the trending_date_map
                 html.Div(
                     dcc.RangeSlider(
@@ -63,10 +50,10 @@ sidebar = dbc.Col(
                             int(df['trending_date_map'].max()): str(max(df['trending_date']).date())
                         }   
                     ),
-                    style={"background-color": "white", "padding": "10px", "margin-bottom": "10px"}
+                    style={"background-color": "white", "padding": "10px", "margin-bottom": "10px",'margin-top':'30px'}
                 ),               
 
-                html.Div(style={'margin-top': '60px'}),
+                html.Div(style={'margin-top': '30px'}),
                 html.Div([
                     html.Label('Country', className='mt-4'),
                     dcc.RadioItems(
@@ -79,19 +66,34 @@ sidebar = dbc.Col(
                             'padding': '20px',
                             'margin-left': '25px'}
                     )
-                ],
-                style={
-                    "background-color": "white", 
-                    "padding": "10px", 
-                    "margin-top": "50px",
-                    "margin-bottom": "10px",
-                    'border-top': '2px solid #d6d6d6'
-                    }
-                )
+                ]),
+                         
+                # add a button to go to another page
+                html.Div([
+                    html.A(
+                        dbc.Button(
+                            "Go to category page", 
+                            color="primary", 
+                            className="mr-1", 
+                            id='go-to-another-page', 
+                            href='/another-page'
+                            ),
+                        href='/another-page'
+                    )],
+                    style={'margin-top': '30px'}
+                ),
             ],
+                
+            style={
+                "background-color": "white", 
+                "padding": "10px", 
+                "margin-top": "50px",
+                "margin-bottom": "10px",
+                'border-top': '2px solid #d6d6d6'
+                },
             vertical=True,
             pills=True,
-        ),
+        )
     ],
     style={
         "position": "fixed", 
@@ -106,8 +108,16 @@ sidebar = dbc.Col(
     md=3,
 )
 
-
 app.layout = dbc.Container([
+    html.Div([
+        dcc.Location(id='url', refresh=False),
+        dcc.Store(id='date-slider-store'),
+        html.Div(id='page-content')
+    ]),
+], fluid=True)
+
+
+index_page = html.Div([
     dbc.Row([
         sidebar,
         dbc.Col(
@@ -116,17 +126,21 @@ app.layout = dbc.Container([
             children=[
                 dbc.Row([
                     dbc.Col(
+                        [
+                            # add a titl
+                            html.H5("What types of movies are popular with audiences? ", style={"textAlign": "center",'margin-bottom':'20px'}),
                         dcc.Graph(
                             id='top-10-categories-graph',
                             style={'width': '100%', 'height': 'auto'}
-                        ),
+                        )
+                        ],
                         width=6,
                         style={'background-color':'#f8f9fa','border-radius':'10px','padding':'20px','margin-top':'10px','margin-left':'10px','margin-right':'10px','margin-bottom':'10px'}
                     ),
                     dbc.Col(
                         [
                             # add a titl
-                            html.H5("The most common words in video titles ", style={"textAlign": "center",'margin-bottom':'20px'}),
+                            html.H5("What words appear commonly in titles?", style={"textAlign": "center",'margin-bottom':'20px'}),
                             html.Img(
                                 id='wordcloud-image', 
                                 # set center
@@ -140,7 +154,7 @@ app.layout = dbc.Container([
                 dbc.Row([
                     dbc.Col(
                         [
-                            html.H5("The best time to post a video", style={"textAlign": "center",'margin-bottom':'20px'}),
+                            html.H5("What's the best time to post a video?", style={"textAlign": "center",'margin-bottom':'20px'}),
                             dcc.Dropdown(
                                 id='heatmap-metric-selector',
                                 options=[
@@ -174,15 +188,118 @@ app.layout = dbc.Container([
             ]
         ),
     ]),
-], fluid=True)
+])
 
+another_page_layout = html.Div(
+    dbc.Row([
+        
+        dbc.Row([
+            
+            dbc.Col([
+                    html.Div([
+                        html.A(
+                            dbc.Button(
+                                "Back to Home",
+                                color="primary", 
+                                className="mr-1", 
+                                id='back-to-home',
+                                href='/'
+                                ),
+                            href='/'
+                        )],
+                        style={'margin-top': '30px', 'margin-left': '100px','margin-top': '50px'})],
+                    md=3
+                ),
+
+            dbc.Col([
+                    # add a dropdown to select the category
+                    html.Div([
+                        html.H5('Select categoryName', style={"textAlign": "center",'margin-bottom':'10px','margin-top':'10px'}),
+                        dcc.Dropdown(
+                            id='category-dropdown',
+                            options=[{'label': i, 'value': i} for i in df['categoryName'].dropna().unique()],
+                            value=df['categoryName'].dropna().unique()[0],
+                            style={'width': '100%'}
+                        )],
+                        style={'margin-left': '20px','width': '100%', 'margin-top': '50px'})
+                ],md=6),
+            
+            ]),
+        
+        
+        # wordcloud
+        dbc.Col(
+            [
+                # add a titl
+                html.H5("What words appear commonly in titles?", style={"textAlign": "center",'margin-bottom':'20px'}),
+                html.Img(
+                    id='wordcloud-image-another', 
+                    # set center
+                    style={'width': '100%', 'height': 'auto','display': 'block', 'margin-left': 'auto', 'margin-right': 'auto'}
+                )
+            ],
+            width=5,
+            style={'background-color':'#f8f9fa','border-radius':'10px','padding':'20px','margin-top':'10px','margin-left':'30px','margin-right':'10px','margin-bottom':'10px'}
+        ),
+        
+        # top 5 videos
+        dbc.Col(
+            [
+                html.H5("Top 5 videos", style={"textAlign": "center",'margin-bottom':'20px'}),
+                html.Div(
+                    id='top-5-videos-content-another',
+                    style={'width': '100%', 'height': 'auto'}
+                ),
+            ],
+            md=5,
+            style={'background-color':'#f8f9fa','border-radius':'10px','padding':'20px','margin-top':'10px','margin-left':'10px','margin-right':'10px','margin-bottom':'10px'}
+        )
+    ])         
+)
+
+@app.callback(
+    Output('page-content', 'children'),
+    [Input('url', 'pathname')],
+    [State('date-slider-store', 'data')]
+)
+def display_page(pathname, date_range):
+    if pathname == '/another-page':
+        return another_page_layout
+    else:
+        return index_page
+
+@app.callback(
+    Output('date-slider-store', 'data'),
+    [Input('date-slider', 'value')]
+)
+def store_date_slider_value(value):
+    return value
+
+
+@app.callback(
+    Output('wordcloud-image-another', 'src'),
+    [Input('date-slider-store', 'data'), Input('category-dropdown', 'value')]
+)
+def update_image(date_range, category):
+    if date_range is not None:
+        return generate_wordcloud(df, date_range, category=category, width=800, height=500)
+    return None
+
+@app.callback(
+    Output('top-5-videos-content-another', 'children'),
+    [Input('date-slider-store', 'data'), Input('category-dropdown', 'value')]
+)
+def update_top5_videos(date_range, category):
+    if date_range is not None:
+        return generate_top5_videos(app, df, date_range, category=category)
+    return None
 
 @app.callback(
     Output('wordcloud-image', 'src'),
     [Input('country-radioitems', 'value'), Input('date-slider', 'value')]
 )
 def update_image( selected_country, date_range):
-    return generate_wordcloud(df,  date_range,selected_country,)
+    return generate_wordcloud(df, date_range, selected_country)
 
 @app.callback(
     Output('heatmap-graph', 'figure'),
