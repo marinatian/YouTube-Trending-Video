@@ -37,21 +37,27 @@ sidebar = dbc.Col(
         html.Div(style={'margin-top': '10px'}),
         dbc.Nav(
             [
-                # create a slider to select the date range to map the trending_date_map
+                
                 html.Div(
-                    dcc.RangeSlider(
-                        id='date-slider',
-                        min=1,
-                        max=df['trending_date_map'].max(),
-                        step=1,
-                        value=[1, df['trending_date_map'].max()],
-                        marks=
-                        {
-                            1: str(min(df['trending_date']).date()),
-                            int(df['trending_date_map'].max()): str(max(df['trending_date']).date())
-                        }
-                    ),
-                    style={"background-color": "white", "padding": "10px", "margin-bottom": "10px",'margin-top':'30px'}
+                    [
+                        dcc.RangeSlider(
+                            id='date-slider',
+                            min=1,
+                            max=df['trending_date_map'].max(),
+                            step=1,
+                            value=[1, df['trending_date_map'].max()],
+                            marks={
+                                1: {'label': str(min(df['trending_date']).date()), 'style': {'white-space': 'nowrap'}},
+                                int(df['trending_date_map'].max()): {'label': str(max(df['trending_date']).date()), 'style': {'white-space': 'nowrap'}}
+                            }
+                        )
+                    ],
+                    style={
+                        "background-color": "white",
+                        "padding": "10px",
+                        "margin-bottom": "10px",
+                        'margin-top': '30px'
+                    }
                 ),
 
                 html.Div(style={'margin-top': '30px'}),
