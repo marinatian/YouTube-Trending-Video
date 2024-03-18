@@ -9,7 +9,8 @@ from Top_5_videos import generate_top5_videos
 from Top_10_Categories import generate_top10_categories
 pd.options.mode.chained_assignment = None  # default='warn'
 
-df = pd.read_csv("YouTube-Trending-Video.csv", low_memory=False,lineterminator='\n')
+url = 'https://media.githubusercontent.com/media/marinatian/YouTube-Trending-Video/main/YouTube-Trending-Video.csv'
+df = pd.read_csv(url, low_memory=False,lineterminator='\n')
 
 df.dropna(inplace=True)
 
@@ -32,7 +33,7 @@ sidebar = dbc.Col(
             ], className='sidebar'),
         html.Div(style={'margin-top': '60px'}),
         html.H3("Trending Video",style={"textAlign": "center"}),
-        html.H6("Helping North American video creators to visualize content trends and audience preferences.",style={"textAlign": "center"}),        
+        html.H6("Helping North American video creators to visualize content trends and audience preferences.",style={"textAlign": "center"}),
         html.Div(style={'margin-top': '10px'}),
         dbc.Nav(
             [
@@ -73,15 +74,15 @@ sidebar = dbc.Col(
                             'margin-left': '25px'}
                     )
                 ]),
-                         
+
                 # add a button to go to another page
                 html.Div([
                     html.A(
                         dbc.Button(
-                            "Go to category page", 
-                            color="primary", 
-                            className="mr-1", 
-                            id='go-to-another-page', 
+                            "Go to category page",
+                            color="primary",
+                            className="mr-1",
+                            id='go-to-another-page',
                             href='/another-page'
                             ),
                         href='/another-page'
@@ -89,10 +90,10 @@ sidebar = dbc.Col(
                     style={'margin-top': '30px'}
                 ),
             ],
-                
+
             style={
-                "background-color": "white", 
-                "padding": "10px", 
+                "background-color": "white",
+                "padding": "10px",
                 "margin-top": "50px",
                 "margin-bottom": "10px",
                 'border-top': '2px solid #d6d6d6'
@@ -102,11 +103,11 @@ sidebar = dbc.Col(
         )
     ],
     style={
-        "position": "fixed", 
-        "top": 0, 
-        "left": 0, 
-        "bottom": 0, 
-        "width": "18rem", 
+        "position": "fixed",
+        "top": 0,
+        "left": 0,
+        "bottom": 0,
+        "width": "18rem",
         'border-right': '2px solid #d6d6d6',
         "padding": "2rem 1rem",
         #"background-color": "rgba(0, 123, 255, 0.6)"
@@ -148,7 +149,7 @@ index_page = html.Div([
                             # add a titl
                             html.H5("What words appear commonly in titles?", style={"textAlign": "center",'margin-bottom':'20px'}),
                             html.Img(
-                                id='wordcloud-image', 
+                                id='wordcloud-image',
                                 # set center
                                 style={'width': '100%', 'height': 'auto','display': 'block', 'margin-left': 'auto', 'margin-right': 'auto'}
                             )
@@ -198,16 +199,16 @@ index_page = html.Div([
 
 another_page_layout = html.Div(
     dbc.Row([
-        
+
         dbc.Row([
-            
+
             dbc.Col([
                     html.Div([
                         html.A(
                             dbc.Button(
                                 "Back to Home",
-                                color="primary", 
-                                className="mr-1", 
+                                color="primary",
+                                className="mr-1",
                                 id='back-to-home',
                                 href='/'
                                 ),
@@ -229,17 +230,17 @@ another_page_layout = html.Div(
                         )],
                         style={'margin-left': '20px','width': '100%', 'margin-top': '50px'})
                 ],md=6),
-            
+
             ]),
-        
-        
+
+
         # wordcloud
         dbc.Col(
             [
                 # add a titl
                 html.H5("What words appear commonly in titles?", style={"textAlign": "center",'margin-bottom':'20px'}),
                 html.Img(
-                    id='wordcloud-image-another', 
+                    id='wordcloud-image-another',
                     # set center
                     style={'width': '100%', 'height': 'auto','display': 'block', 'margin-left': 'auto', 'margin-right': 'auto'}
                 )
@@ -247,7 +248,7 @@ another_page_layout = html.Div(
             width=5,
             style={'background-color':'#f8f9fa','border-radius':'10px','padding':'20px','margin-top':'10px','margin-left':'30px','margin-right':'10px','margin-bottom':'10px'}
         ),
-        
+
         # top 5 videos
         dbc.Col(
             [
@@ -260,7 +261,7 @@ another_page_layout = html.Div(
             md=5,
             style={'background-color':'#f8f9fa','border-radius':'10px','padding':'20px','margin-top':'10px','margin-left':'10px','margin-right':'10px','margin-bottom':'10px'}
         )
-    ])         
+    ])
 )
 
 @app.callback(
@@ -329,4 +330,4 @@ def update_top10_categories(selected_country,date_range):
     return generate_top10_categories(df, date_range, selected_country)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
